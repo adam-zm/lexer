@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     LEFT_PAREN,
@@ -11,7 +13,6 @@ pub enum TokenType {
     SEMICOLON,
     SLASH,
     STAR,
-    SPACE,
     // One or two character tokens.
     BANG,
     BANG_EQUAL,
@@ -46,6 +47,12 @@ pub enum TokenType {
     WHILE,
 
     EOF,
+}
+
+impl fmt::Display for TokenType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -159,6 +166,12 @@ impl<'a> Lexer<'a> {
                     value: None,
                 });
             }
+            "var" => {
+                return Ok(Token {
+                    token_t: TokenType::VAR,
+                    value: None,
+                });
+            }
             _ => {
                 return Ok(token);
             }
@@ -166,16 +179,16 @@ impl<'a> Lexer<'a> {
     }
 
     pub fn next(&mut self) -> Result<Token, miette::Report> {
-        if self.rest.is_empty() {
-            return Ok(Token {
-                token_t: TokenType::EOF,
-                value: None,
-            });
-        }
-
         let mut chars = self.rest.chars();
 
         loop {
+            if self.rest.is_empty() {
+                return Ok(Token {
+                    token_t: TokenType::EOF,
+                    value: None,
+                });
+            }
+
             let ch = chars.next().expect("Should be a char");
             self.rest = chars.as_str();
 
