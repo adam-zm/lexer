@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     LEFT_PAREN,
