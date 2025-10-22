@@ -19,7 +19,10 @@ impl<'a> Parser<'a> {
         Parser {
             tokens: tokens,
             ast: ast,
-            curr_token: tokens[0].clone(),
+            curr_token: Token {
+                token_t: TokenType::EOF,
+                value: None,
+            },
             pos: 0,
         }
     }
@@ -34,20 +37,20 @@ impl<'a> Parser<'a> {
     }
 
     fn advace_token(&mut self) -> Option<Token> {
-        self.pos += 1;
         if self.pos > self.tokens.len() {
             return None;
         }
 
         self.curr_token = self.tokens[self.pos].clone();
+        self.pos += 1;
         Some(self.curr_token.clone())
     }
 
     fn expect_token(&mut self, expected: TokenType) -> bool {
-        if self.pos + 1 > self.tokens.len() {
+        if self.pos > self.tokens.len() {
             return false;
         }
-        let temp = self.tokens[self.pos + 1].clone();
+        let temp = self.tokens[self.pos].clone();
 
         if temp.token_t == expected {
             return true;
@@ -56,6 +59,7 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse_token(&mut self) -> Result<(), miette::Report> {
+        self.advace_token();
         match self.curr_token.token_t {
             TokenType::VAR => {
                 let ident = self.advace_token().unwrap();
@@ -64,7 +68,6 @@ impl<'a> Parser<'a> {
                         ident.value.expect("Should be a valid identifier"),
                     ));
                     if self.expect_token(TokenType::SEMICOLON) {
-                        self.advace_token();
                         self.advace_token();
                         Ok(())
                     } else {
