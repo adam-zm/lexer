@@ -6,10 +6,10 @@ mod lexer;
 mod parser;
 
 fn main() -> Result<(), miette::Report> {
-    let input = "var name;
-        23 + 32;";
+    let path = std::env::args().nth(1).expect("No file path given");
+    let input = std::fs::read_to_string(path).expect("Should have been able to read file");
 
-    let mut lexer = lexer::Lexer::initialize(input);
+    let mut lexer = lexer::Lexer::initialize(&input);
     let mut tokens: Vec<Token> = Vec::new();
     loop {
         let token = lexer.next()?;

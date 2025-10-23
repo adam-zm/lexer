@@ -173,6 +173,54 @@ impl<'a> Lexer<'a> {
                     value: None,
                 });
             }
+            "for" => {
+                return Ok(Token {
+                    token_t: TokenType::FOR,
+                    value: None,
+                });
+            }
+            "return" => {
+                return Ok(Token {
+                    token_t: TokenType::RETURN,
+                    value: None,
+                });
+            }
+            "and" => {
+                return Ok(Token {
+                    token_t: TokenType::AND,
+                    value: None,
+                });
+            }
+            "this" => {
+                return Ok(Token {
+                    token_t: TokenType::THIS,
+                    value: None,
+                });
+            }
+            "class" => {
+                return Ok(Token {
+                    token_t: TokenType::CLASS,
+                    value: None,
+                });
+            }
+            "print" => {
+                return Ok(Token {
+                    token_t: TokenType::PRINT,
+                    value: None,
+                });
+            }
+            "or" => {
+                return Ok(Token {
+                    token_t: TokenType::OR,
+                    value: None,
+                });
+            }
+            "super" => {
+                return Ok(Token {
+                    token_t: TokenType::SUPER,
+                    value: None,
+                });
+            }
             _ => {
                 return Ok(token);
             }
