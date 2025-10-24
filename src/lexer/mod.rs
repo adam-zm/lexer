@@ -46,6 +46,7 @@ pub enum TokenType {
     TRUE,
     VAR,
     WHILE,
+    ADD,
 
     EOF,
 }
@@ -218,6 +219,12 @@ impl<'a> Lexer<'a> {
             "super" => {
                 return Ok(Token {
                     token_t: TokenType::SUPER,
+                    value: None,
+                });
+            }
+            "add" => {
+                return Ok(Token {
+                    token_t: TokenType::ADD,
                     value: None,
                 });
             }

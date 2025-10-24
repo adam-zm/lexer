@@ -1,2 +1,2 @@
 var testing;
-56 +23;
+add(23 ,43);

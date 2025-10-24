@@ -92,42 +92,35 @@ impl<'a> Parser<'a> {
                     ));
                 }
             }
-            TokenType::NUMBER => {
-                let number: u32 = self
-                    .curr_token
-                    .value
-                    .as_mut()
-                    .unwrap()
-                    .clone()
-                    .parse()
-                    .unwrap();
-                if self.expect_token(TokenType::PLUS) {
+            TokenType::ADD => {
+                if self.expect_token(TokenType::LEFT_PAREN) {
                     self.advace_token();
-                    let mut num_literal = self.advace_token().expect("Second number needed");
-                    if num_literal.token_t == TokenType::NUMBER {
-                        let num: u32 = num_literal.value.as_mut().unwrap().clone().parse().unwrap();
-                        self.ast.push(Operation::Addition(number, num));
-                        self.advace_token();
-                        Ok(())
-                    } else {
-                        let diagnostic = miette::MietteDiagnostic::new(format!(
-                            "Expected second number but got {}, {}",
-                            num_literal.token_t,
-                            num_literal.value.unwrap()
-                        ));
-                        return Err(miette::Report::with_source_code(
-                            diagnostic.into(),
-                            self.list_tokens(),
-                        ));
-                    }
-                } else {
-                    let mut diagnostic = miette::MietteDiagnostic::new(format!(
-                        "Unexpected token while parsing addition {}",
-                        self.curr_token.token_t
-                    ));
-                    //TODO: fix span to match token length
-                    diagnostic = diagnostic.with_label(miette::LabeledSpan::at(self.pos, "here"));
+                    let number: u32 = self
+                        .advace_token()
+                        .expect("Expected number")
+                        .value
+                        .expect("Number token needs to have a value")
+                        .parse()
+                        .expect("Not a number");
+                    self.expect_token(TokenType::COMMA);
+                    self.advace_token();
+                    let second_number: u32 = self
+                        .advace_token()
+                        .expect("Expected number")
+                        .value
+                        .expect("Number token needs to have a value")
+                        .parse()
+                        .expect("Not a number");
+                    self.expect_token(TokenType::RIGHT_PAREN);
+                    self.advace_token();
+                    self.expect_token(TokenType::COMMA);
+                    self.advace_token();
 
+                    self.ast.push(Operation::Addition(number, second_number));
+                    Ok(())
+                } else {
+                    let diagnostic =
+                        miette::MietteDiagnostic::new(format!("Error parsing addition"));
                     return Err(miette::Report::with_source_code(
                         diagnostic.into(),
                         self.list_tokens(),

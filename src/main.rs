@@ -2,6 +2,7 @@ use crate::lexer::Token;
 use crate::lexer::TokenType;
 use crate::parser::Operation;
 
+mod codegen;
 mod lexer;
 mod parser;
 
@@ -24,7 +25,8 @@ fn main() -> Result<(), miette::Report> {
     parser.parse_token()?;
     parser.parse_token()?;
 
-    for op in ast {
+    println!("IR: ");
+    for op in &ast {
         match &op {
             Operation::CreateVar(name) => {
                 println!("CreateVar {}", name);
@@ -34,6 +36,10 @@ fn main() -> Result<(), miette::Report> {
             }
         }
     }
+    println!("_________");
+    println!("Eval: ");
+
+    codegen::eval(ast.iter().nth(1).unwrap());
 
     Ok(())
 }
